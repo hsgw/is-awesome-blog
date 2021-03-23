@@ -124,7 +124,8 @@ import {
   wrapProperty,
   computed,
 } from '@nuxtjs/composition-api'
-import { Article, ArticleResultItem, getSourceKind } from '~/models/cms'
+import { ArticleResultItem } from '@/models/cms'
+import { getSourceKind, Article } from '@/models/article'
 
 const useConfig = wrapProperty('$config', false)
 

@@ -13,7 +13,9 @@ const config: NuxtConfig = {
   },
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
-  ssr: true,
+
+  // in Development, set ssr: false
+  ssr: process.env.NODE_ENV !== 'development',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -97,6 +99,11 @@ const config: NuxtConfig = {
       routes.push({
         name: 'index',
         path: '/',
+        component: resolve(__dirname, 'pages/_pageIndex.vue'),
+      })
+      routes.push({
+        name: 'category',
+        path: '/category/:category/:pageIndex?',
         component: resolve(__dirname, 'pages/_pageIndex.vue'),
       })
     },

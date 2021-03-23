@@ -11,6 +11,7 @@
 <style lang="scss" scoped>
 .container {
   position: relative;
+  max-width: 800px;
   .header {
     z-index: 100;
   }

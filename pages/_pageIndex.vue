@@ -2,12 +2,19 @@
   <div class="container">
     <div>
       <header>
-        <div v-if="!hasPrev" class="content">
+        <div v-if="!hasPrev && !categoryName" class="content">
           <p>インターネットにあるイケてるものを並べるブログ</p>
           <p>
             主に音楽やデザイン、電子工作のプロジェクトを集めています<br />
             最近はメカニカルキーボードが好き
           </p>
+        </div>
+        <div v-if="categoryName" class="categoryTitle">
+          {{
+            `#${categoryName[0].toUpperCase()}${categoryName.slice(1)} ${
+              pageIndex === 0 ? '' : `/ ${pageIndex}`
+            }`
+          }}
         </div>
       </header>
       <main>
@@ -43,6 +50,13 @@ header {
         margin-top: 0;
       }
     }
+  }
+  .categoryTitle {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: white;
+    font-size: large;
+    font-weight: 700;
   }
 }
 main {
@@ -90,7 +104,8 @@ import {
   useContext,
   computed,
 } from '@nuxtjs/composition-api'
-import { ArticleResult, getSourceKind, Article } from '@/models/cms'
+import { ArticleResult, Category, CategoryResult } from '@/models/cms'
+import { getSourceKind, Article } from '@/models/article'
 
 const useConfig = wrapProperty('$config', false)
 
@@ -100,13 +115,14 @@ export default defineComponent({
     const config = useConfig()
     const { $axios } = useContext()
 
-    const articles = ref<Article[]>([])
-    const articlesTotalCount = ref(0)
     const pageIndex = computed(() => {
       const ret = Number(route.value.params.pageIndex)
       if (isNaN(ret)) return 0
       return ret
     })
+
+    const articles = ref<Article[]>([])
+    const articlesTotalCount = ref(0)
     const articlesOffset = computed(() => {
       return pageIndex.value * config.ITEMS_PER_PAGE
     })
@@ -115,13 +131,40 @@ export default defineComponent({
       () =>
         articlesTotalCount.value > articlesOffset.value + config.ITEMS_PER_PAGE
     )
-    const prevLink = computed(() => {
-      if (pageIndex.value === 1) return '/'
-      return `/${pageIndex.value - 1}`
-    })
-    const nextLink = computed(() => `/${pageIndex.value + 1}`)
+
+    const category = ref<Category>()
+    const categoryName = computed(() => route.value.params.category)
+
+    const prevLink = computed(
+      () =>
+        (categoryName.value ? `/category/${categoryName.value}/` : '/') +
+        (pageIndex.value < 1 ? `${pageIndex.value - 1}` : '')
+    )
+    const nextLink = computed(
+      () =>
+        (categoryName.value ? `/category/${categoryName.value}/` : '/') +
+        `${pageIndex.value + 1}`
+    )
 
     useFetch(async () => {
+      let filters
+      if (categoryName.value) {
+        const result = await $axios.get<CategoryResult>(
+          config.MICROCMS_API_BASE_URL + 'categories',
+          {
+            headers: {
+              'X-API-KEY': config.MICROCMS_X_API_KEY,
+            },
+            params: {
+              limit: 1,
+              fields: 'id,name',
+              filters: `name[equals]${categoryName.value}`,
+            },
+          }
+        )
+        category.value = result.data.contents[0]
+        filters = `categories[contains]${category.value.id}`
+      }
       const result = await $axios.get<ArticleResult>(
         config.MICROCMS_API_BASE_URL + 'articles',
         {
@@ -134,6 +177,7 @@ export default defineComponent({
             fields:
               'id,publishedAt,title,image,categories.name,categories.id,source',
             offset: articlesOffset.value,
+            filters,
           },
         }
       )
@@ -147,7 +191,15 @@ export default defineComponent({
         )
       }
     })
-    return { articles, hasPrev, hasNext, prevLink, nextLink }
+    return {
+      articles,
+      pageIndex,
+      hasPrev,
+      hasNext,
+      prevLink,
+      nextLink,
+      categoryName,
+    }
   },
 })
 </script>

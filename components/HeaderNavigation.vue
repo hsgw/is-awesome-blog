@@ -1,9 +1,9 @@
 <template>
   <div class="headerNav">
-    <div class="item">Top</div>
+    <div class="item"><a href="/">Top</a></div>
     <div class="item">About</div>
     <div v-for="category in categories" :key="category.id" class="item">
-      {{ `#${category.name}` }}
+      <a :href="'/category/' + category.name">{{ `#${category.name}` }}</a>
     </div>
   </div>
 </template>

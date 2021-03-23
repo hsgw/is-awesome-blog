@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { Article } from '@/models/cms'
+import { Article } from '@/models/article'
 
 export default defineComponent({
   props: {
