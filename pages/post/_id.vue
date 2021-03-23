@@ -140,7 +140,11 @@ export default defineComponent({
     const id = computed(() => route.value.params.id)
     const path = computed(() => route.value.fullPath)
     const title = computed(() => article.value?.title ?? '')
-    const body = computed(() => article.value?.body ?? '')
+    const body = computed(() =>
+      article.value?.body
+        ? article.value.body.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')
+        : ''
+    )
     const thumbnail = computed(
       () => article.value?.sourceDetail.thumbnail ?? ''
     )
