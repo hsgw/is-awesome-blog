@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <header>
-        <div class="content">
+        <div v-if="!hasPrev" class="content">
           <p>インターネットにあるイケてるものを並べるブログ</p>
           <p>
             主に音楽やデザイン、電子工作のプロジェクトを集めています<br />
@@ -11,11 +11,19 @@
         </div>
       </header>
       <main>
+        <div v-if="hasPrev" class="pageNavContainer prev">
+          <div class="pageNav"><span>/// Prev</span></div>
+          <a :href="prevLink"></a>
+        </div>
         <ArticleIndexItem
           v-for="article in articles"
           :key="article.id"
           :article="article"
         />
+        <div v-if="hasNext" class="pageNavContainer next">
+          <div class="pageNav"><span>Next ///</span></div>
+          <a :href="nextLink"></a>
+        </div>
       </main>
     </div>
   </div>
@@ -40,6 +48,36 @@ header {
 main {
   max-width: 600px;
 }
+.pageNavContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  .pageNav {
+    width: 300px;
+    padding: 1rem;
+    margin: 1rem 1rem;
+    border: 1px solid black;
+    span {
+      font-weight: 800;
+      padding: 0 1rem;
+      background-color: white;
+    }
+  }
+  &.next {
+    justify-content: flex-end;
+    text-align: right;
+    .pageNav {
+      margin-top: 0;
+    }
+  }
+  a {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+}
 </style>
 
 <script lang="ts">
@@ -48,32 +86,54 @@ import {
   ref,
   useFetch,
   wrapProperty,
+  useRoute,
+  useContext,
+  computed,
 } from '@nuxtjs/composition-api'
-import axios from 'axios'
 import { ArticleResult, getSourceKind, Article } from '@/models/cms'
 
 const useConfig = wrapProperty('$config', false)
 
 export default defineComponent({
   setup(_props, _context) {
+    const route = useRoute()
+    const config = useConfig()
+    const { $axios } = useContext()
+
     const articles = ref<Article[]>([])
     const articlesTotalCount = ref(0)
-    const currentArticlesOffset = ref(0)
-    const config = useConfig()
+    const pageIndex = computed(() => {
+      const ret = Number(route.value.params.pageIndex)
+      if (isNaN(ret)) return 0
+      return ret
+    })
+    const articlesOffset = computed(() => {
+      return pageIndex.value * config.ITEMS_PER_PAGE
+    })
+    const hasPrev = computed(() => pageIndex.value > 0)
+    const hasNext = computed(
+      () =>
+        articlesTotalCount.value > articlesOffset.value + config.ITEMS_PER_PAGE
+    )
+    const prevLink = computed(() => {
+      if (pageIndex.value === 1) return '/'
+      return `/${pageIndex.value - 1}`
+    })
+    const nextLink = computed(() => `/${pageIndex.value + 1}`)
 
-    const getNextArticles = async () => {
-      const result = await axios.get<ArticleResult>(
+    useFetch(async () => {
+      const result = await $axios.get<ArticleResult>(
         config.MICROCMS_API_BASE_URL + 'articles',
         {
           headers: {
             'X-API-KEY': config.MICROCMS_X_API_KEY,
           },
           params: {
-            limit: 10,
+            limit: config.ITEMS_PER_PAGE,
             orders: '-publishedAt',
             fields:
               'id,publishedAt,title,image,categories.name,categories.id,source',
-            offset: currentArticlesOffset.value,
+            offset: articlesOffset.value,
           },
         }
       )
@@ -85,14 +145,9 @@ export default defineComponent({
             sourceDetail: getSourceKind(v),
           }))
         )
-        currentArticlesOffset.value += result.data.contents.length
       }
-    }
-
-    useFetch(async () => {
-      await getNextArticles()
     })
-    return { articles }
+    return { articles, hasPrev, hasNext, prevLink, nextLink }
   },
 })
 </script>

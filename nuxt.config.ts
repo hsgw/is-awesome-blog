@@ -5,6 +5,7 @@ const config: NuxtConfig = {
     BASE_URL: process.env.BASE_URL || 'https://is-awesome.5z6p.com',
     MICROCMS_X_API_KEY: process.env.DEV_MICROCMS_X_API_KEY || '',
     MICROCMS_API_BASE_URL: process.env.DEV_MICROCMS_API_BASE_URL || '',
+    ITEMS_PER_PAGE: process.env.ITEMS_PER_PAGE || 10,
   },
   privateRuntimeConfig: {
     MICROCMS_X_API_KEY: process.env.MICROCMS_X_API_KEY,
@@ -16,7 +17,6 @@ const config: NuxtConfig = {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'is Awesome',
     titleTemplate: '%s is Awesome',
     htmlAttrs: {
       lang: 'jp',
@@ -91,6 +91,16 @@ const config: NuxtConfig = {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'index',
+        path: '/',
+        component: resolve(__dirname, 'pages/_pageIndex.vue'),
+      })
+    },
+  },
 }
 
 export default config

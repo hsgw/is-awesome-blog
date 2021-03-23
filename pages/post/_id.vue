@@ -112,7 +112,6 @@ hr {
 </style>
 
 <script lang="ts">
-import axios from 'axios'
 import { Tweet } from 'vue-tweet-embed'
 import { Youtube } from 'vue-youtube'
 import {
@@ -120,6 +119,7 @@ import {
   useMeta,
   useRoute,
   useFetch,
+  useContext,
   ref,
   wrapProperty,
   computed,
@@ -134,6 +134,7 @@ export default defineComponent({
   setup(_props, _context) {
     const config = useConfig()
     const route = useRoute()
+    const { $axios } = useContext()
 
     const article = ref<Article>()
     const id = computed(() => route.value.params.id)
@@ -171,7 +172,7 @@ export default defineComponent({
     }))
 
     useFetch(async () => {
-      const result = await axios.get<ArticleResultItem>(
+      const result = await $axios.get<ArticleResultItem>(
         config.MICROCMS_API_BASE_URL + 'articles/' + id.value,
         {
           headers: {

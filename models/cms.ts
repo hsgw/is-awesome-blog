@@ -50,7 +50,6 @@ function getYoutubeVideoId(url: string) {
 
 function getTwitterStatusId(url: string) {
   if (url.startsWith('https://twitter.com/')) {
-    console.log()
     return url.replace('https://twitter.com/', '').split('/').slice(-1)[0]
   }
 }

@@ -24,12 +24,12 @@
 </style>
 
 <script lang="ts">
-import axios from 'axios'
 import {
   defineComponent,
   ref,
   useFetch,
   wrapProperty,
+  useContext,
 } from '@nuxtjs/composition-api'
 import { Category, CategoryResult } from '@/models/cms'
 
@@ -39,10 +39,11 @@ export default defineComponent({
   props: {},
   setup(_props, _context) {
     const config = useConfig()
+    const { $axios } = useContext()
     const categories = ref<Category[]>([])
 
     useFetch(async () => {
-      const result = await axios.get<CategoryResult>(
+      const result = await $axios.get<CategoryResult>(
         config.MICROCMS_API_BASE_URL + 'categories',
         {
           headers: { 'X-API-KEY': config.MICROCMS_X_API_KEY },
