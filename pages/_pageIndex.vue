@@ -134,7 +134,7 @@ export default defineComponent({
     const prevLink = computed(
       () =>
         (categoryName.value ? `/category/${categoryName.value}/` : '/') +
-        (pageIndex.value < 1 ? `${pageIndex.value - 1}` : '')
+        (pageIndex.value - 1 !== 0 ? `${pageIndex.value - 1}` : '')
     )
     const nextLink = computed(
       () =>
