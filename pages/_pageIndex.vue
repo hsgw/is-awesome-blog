@@ -20,7 +20,7 @@
       <main>
         <div v-if="hasPrev" class="pageNavContainer prev">
           <div class="pageNav"><span>/// Prev</span></div>
-          <a :href="prevLink"></a>
+          <NuxtLink :to="prevLink"></NuxtLink>
         </div>
         <ArticleIndexItem
           v-for="article in articles"
@@ -29,7 +29,7 @@
         />
         <div v-if="hasNext" class="pageNavContainer next">
           <div class="pageNav"><span>Next ///</span></div>
-          <a :href="nextLink"></a>
+          <NuxtLink :to="nextLink"></NuxtLink>
         </div>
       </main>
     </div>
@@ -39,11 +39,10 @@
 <style lang="scss" scoped>
 header {
   .content {
-    margin: 1rem 1rem 1.5rem 1rem;
+    margin: 1rem 1rem 2rem 1rem;
     padding: 1rem;
     font-size: small;
     background-color: white;
-    max-width: 600px;
     p {
       margin-top: 1rem;
       &:nth-child(1) {
@@ -58,9 +57,6 @@ header {
     font-size: large;
     font-weight: 700;
   }
-}
-main {
-  max-width: 600px;
 }
 .pageNavContainer {
   position: relative;

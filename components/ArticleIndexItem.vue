@@ -8,7 +8,10 @@
         width="100%"
         height="auto"
       />
-      <div :class="article.sourceDetail.thumbnail ? 'title' : 'noThumb'">
+      <div
+        :class="article.sourceDetail.thumbnail ? 'title' : 'noThumb'"
+        class="fontTitle"
+      >
         {{ article.title }}
       </div>
       <a :href="href"></a>
@@ -46,28 +49,31 @@
       width: 100%;
     }
     .title {
-      font-size: large;
+      font-size: larger;
       position: absolute;
       bottom: 10%;
       background-color: white;
-      font-weight: 900;
-      padding-right: 0.2rem;
+      padding-right: 0.4rem;
     }
     & > a {
+      cursor: pointer;
       position: absolute;
       z-index: 19;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      &:hover {
+        background-color: inherit;
+      }
     }
   }
   .description {
     font-size: small;
     text-align: right;
+
     .category {
       text-transform: capitalize;
-      font-weight: 600;
     }
   }
 }

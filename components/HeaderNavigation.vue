@@ -16,7 +16,6 @@
   .item {
     text-transform: capitalize;
     font-size: small;
-    font-weight: 600;
     padding: 0.2rem 0.4rem;
     text-decoration: underline;
   }

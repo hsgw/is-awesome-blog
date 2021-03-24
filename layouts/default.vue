@@ -11,11 +11,12 @@
 <style lang="scss" scoped>
 .container {
   position: relative;
-  max-width: 800px;
+  width: 100%;
   .header {
     z-index: 100;
   }
   .main {
+    max-width: 800px;
     z-index: 10;
     padding-top: $headerHeight;
   }

@@ -20,7 +20,7 @@
       ></Youtube>
     </div>
     <div class="content">
-      <div class="title">{{ article.title }}</div>
+      <div class="title fontTitle">{{ article.title }}</div>
       <div class="info">
         <div>
           <span

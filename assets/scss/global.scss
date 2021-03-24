@@ -1,9 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;900&family=Noto+Serif+JP:wght@300&display=swap');
+
 body {
+  font-feature-settings: 'palt';
+  font-family: 'Noto Sans JP', serif;
+  font-weight: 300;
   background-color: $bgColor;
 }
 
 img {
   vertical-align: top;
+}
+
+a {
+  color: black;
+  &:hover {
+    background-color: black;
+    color: white;
+  }
 }
 
 hr {
@@ -12,4 +25,8 @@ hr {
   max-width: 100%;
   background-position: 50%;
   box-sizing: border-box;
+}
+
+.fontTitle {
+  font-family: 'Noto Serif JP', serif;
 }
