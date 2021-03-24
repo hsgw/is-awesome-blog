@@ -11,7 +11,7 @@
         <Tweet
           v-else-if="article.sourceDetail.kind === 'twitter'"
           :id="article.sourceDetail.id"
-          class="twitter"
+          widget-class="twitter"
           ><div class="loading">
             <div class="twitterLoader">
               <AtomIcon :icon="mdiTwitter"></AtomIcon>
@@ -88,14 +88,13 @@ main {
       width: 100%;
     }
     .twitter {
-      min-height: 300px;
       .loading {
-        height: 300px;
+        height: 400px;
         .twitterLoader {
           color: grey;
           width: 100px;
           height: 100px;
-          animation: twitter 1s ease-in;
+          animation: twitter 1s ease-in infinite;
         }
       }
     }
@@ -132,9 +131,6 @@ hr {
 @keyframes twitter {
   0% {
     transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(180deg);
   }
   100% {
     transform: rotate(360deg);

@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <GlobalNavigation id="globalNav" />
     <div class="main">
       <HeaderNavigation id="headerNav" />
       <Nuxt />
@@ -12,10 +11,8 @@
 .container {
   position: relative;
   width: 100%;
-  .globalNav {
-    z-index: 100;
-  }
   .main {
+    margin: 0 auto;
     max-width: 800px;
     z-index: 50;
     padding-top: $headerHeight;

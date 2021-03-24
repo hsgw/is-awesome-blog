@@ -43,12 +43,16 @@
       height: auto;
     }
     .noThumb {
-      padding: 1rem 0;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-size: 2.4rem;
       font-weight: 500;
       background-color: white;
       position: relative;
       width: 100%;
+      min-height: 300px;
     }
     .title {
       font-size: larger;

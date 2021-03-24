@@ -16,6 +16,9 @@
             }`
           }}
         </div>
+        <div v-else-if="pageIndex !== 0" class="categoryTitle">
+          {{ `#All ${pageIndex === 0 ? '' : `/ ${pageIndex}`}` }}
+        </div>
       </header>
       <main>
         <div v-if="hasPrev" class="pageNavContainer prev">
@@ -33,12 +36,14 @@
         </div>
       </main>
     </div>
+    <Loading :loading="isLoading" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 header {
   .content {
+    width: calc(100% - 2rem);
     margin: 1rem 1rem 2rem 1rem;
     padding: 1rem;
     font-size: small;
@@ -53,7 +58,7 @@ header {
   .categoryTitle {
     margin: 1.5rem 0;
     padding: 1rem;
-    background-color: white;
+    border: 1px solid black;
     font-size: large;
     font-weight: 700;
   }
@@ -110,6 +115,8 @@ export default defineComponent({
     const route = useRoute()
     const config = useConfig()
     const { $axios } = useContext()
+
+    const isLoading = ref(true)
 
     const pageIndex = computed(() => {
       const ret = Number(route.value.params.pageIndex)
@@ -186,8 +193,10 @@ export default defineComponent({
           }))
         )
       }
+      isLoading.value = false
     })
     return {
+      isLoading,
       articles,
       pageIndex,
       hasPrev,
