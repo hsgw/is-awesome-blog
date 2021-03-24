@@ -100,8 +100,8 @@ import {
   useContext,
   computed,
 } from '@nuxtjs/composition-api'
-import { ArticleResult, Category, CategoryResult } from '@/models/cms'
-import { getSourceKind, Article } from '@/models/article'
+import { ArticleResult, Category, CategoryResult } from '@/scripts/cms'
+import { getSourceKind, Article } from '@/scripts/article'
 
 const useConfig = wrapProperty('$config', false)
 

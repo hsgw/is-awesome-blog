@@ -4,7 +4,8 @@
       <img
         v-if="article.sourceDetail.kind === 'normal'"
         :src="article.sourceDetail.thumbnail"
-        width="100%"
+        width="320px"
+        height="180px"
       />
       <Tweet
         v-else-if="article.sourceDetail.kind === 'twitter'"
@@ -16,10 +17,13 @@
         v-else-if="article.sourceDetail.kind === 'youtube'"
         :video-id="article.sourceDetail.id"
         class="youtube"
-        fit-parent
+        fitParent
+        resize
+        @ready="onYoutubeReady"
       ></Youtube>
+      <div v-show="isLoading" class="hide"></div>
     </div>
-    <div class="content">
+    <div v-show="!isLoading" class="content">
       <div class="title serif">{{ article.title }}</div>
       <div class="info">
         <div>
@@ -43,8 +47,8 @@
         }}</a>
       </div>
       <hr />
+      <Share class="share" />
     </div>
-    <Share class="share" />
   </main>
 </template>
 
@@ -52,7 +56,11 @@
 main {
   margin: 1rem 0 2rem 0;
   .image {
-    width: 100%;
+    position: relative;
+    img {
+      width: 100%;
+      height: auto;
+    }
     .youtube {
       width: 100%;
     }
@@ -63,6 +71,14 @@ main {
         width: 100%;
         height: 300px;
       }
+    }
+    .hide {
+      position: absolute;
+      background-color: $bgColor;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
     }
   }
   .content {
@@ -124,8 +140,8 @@ import {
   wrapProperty,
   computed,
 } from '@nuxtjs/composition-api'
-import { ArticleResultItem } from '@/models/cms'
-import { getSourceKind, Article } from '@/models/article'
+import { ArticleResultItem } from '@/scripts/cms'
+import { getSourceKind, Article } from '@/scripts/article'
 
 const useConfig = wrapProperty('$config', false)
 
@@ -138,6 +154,7 @@ export default defineComponent({
     const { $axios } = useContext()
 
     const article = ref<Article>()
+    const isLoading = ref(true)
     const id = computed(() => route.value.params.id)
     const path = computed(() => route.value.fullPath)
     const title = computed(() => article.value?.title ?? '')
@@ -193,9 +210,15 @@ export default defineComponent({
         ...result.data,
         sourceDetail: getSourceKind(result.data),
       }
+      if (article.value.sourceDetail.kind !== 'youtube') {
+        isLoading.value = false
+      }
     })
 
-    return { article }
+    const onYoutubeReady = () => {
+      isLoading.value = false
+    }
+    return { article, isLoading, onYoutubeReady }
   },
   head: {},
 })

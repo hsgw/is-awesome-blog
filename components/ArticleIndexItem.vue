@@ -5,8 +5,8 @@
         v-if="article.sourceDetail.thumbnail"
         :src="article.sourceDetail.thumbnail"
         :alt="article.title"
-        width="100%"
-        height="auto"
+        width="320px"
+        height="180px"
       />
       <div
         :class="article.sourceDetail.thumbnail ? 'title' : 'noThumb'"
@@ -39,6 +39,8 @@
     img {
       z-index: 15;
       margin: 0;
+      width: 100%;
+      height: auto;
     }
     .noThumb {
       padding: 1rem 0;
@@ -83,7 +85,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { Article } from '@/models/article'
+import { Article } from '@/scripts/article'
 
 export default defineComponent({
   props: {

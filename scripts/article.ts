@@ -1,4 +1,4 @@
-import { ArticleResultItem } from '@/models/cms'
+import { ArticleResultItem } from '~/scripts/cms'
 
 interface SourceDetail {
   kind: 'youtube' | 'twitter' | 'normal' | 'unknown'

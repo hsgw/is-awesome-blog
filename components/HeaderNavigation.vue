@@ -32,7 +32,7 @@ import {
   wrapProperty,
   useContext,
 } from '@nuxtjs/composition-api'
-import { Category, CategoryResult } from '@/models/cms'
+import { Category, CategoryResult } from '@/scripts/cms'
 
 const useConfig = wrapProperty('$config', false)
 
