@@ -10,11 +10,11 @@
       />
       <div
         :class="article.sourceDetail.thumbnail ? 'title' : 'noThumb'"
-        class="fontTitle"
+        class="serif"
       >
         {{ article.title }}
       </div>
-      <a :href="href"></a>
+      <NuxtLink :to="href"></NuxtLink>
     </div>
     <div class="description">
       <span
@@ -43,13 +43,14 @@
     .noThumb {
       padding: 1rem 0;
       font-size: 2.4rem;
-      font-weight: 800;
+      font-weight: 500;
       background-color: white;
       position: relative;
       width: 100%;
     }
     .title {
       font-size: larger;
+      font-weight: 500;
       position: absolute;
       bottom: 10%;
       background-color: white;
@@ -69,6 +70,7 @@
     }
   }
   .description {
+    padding-right: 0.5rem;
     font-size: small;
     text-align: right;
 

@@ -3,7 +3,9 @@
     <div class="item"><a href="/">Top</a></div>
     <div class="item">About</div>
     <div v-for="category in categories" :key="category.id" class="item">
-      <a :href="'/category/' + category.name">{{ `#${category.name}` }}</a>
+      <NuxtLink :to="'/category/' + category.name">{{
+        `#${category.name}`
+      }}</NuxtLink>
     </div>
   </div>
 </template>

@@ -20,7 +20,7 @@
       ></Youtube>
     </div>
     <div class="content">
-      <div class="title fontTitle">{{ article.title }}</div>
+      <div class="title serif">{{ article.title }}</div>
       <div class="info">
         <div>
           <span
@@ -68,11 +68,11 @@ main {
   .content {
     padding: 1rem 0.5rem 0 0.5rem;
     .title {
-      font-size: large;
-      font-weight: 700;
+      font-size: larger;
+      font-weight: 500;
     }
     .info {
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       font-size: small;
       color: grey;
       .category {
@@ -99,7 +99,7 @@ hr {
 <style lang="scss">
 .articleBody {
   p {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   blockquote {
     color: grey;
