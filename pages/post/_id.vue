@@ -73,6 +73,7 @@
           v-for="article in recentArticles"
           :key="article.id"
           :article="article"
+          :style="randomRotateStyle()"
           class="item"
         />
       </div>
@@ -116,7 +117,7 @@
     span {
       font-weight: 500;
       background-color: white;
-      padding-right: 0.3rem;
+      padding: 0 0.3rem;
     }
   }
   .container {
@@ -223,6 +224,7 @@ import {
 } from '@nuxtjs/composition-api'
 import { ArticleResult, ArticleResultItem } from '@/scripts/cms'
 import { getSourceKind, Article } from '@/scripts/article'
+import { randomRotateStyle } from '@/scripts/random'
 
 const useConfig = wrapProperty('$config', false)
 
@@ -391,6 +393,7 @@ export default defineComponent({
       prevArticle,
       isLoading,
       onYoutubeReady,
+      randomRotateStyle,
     }
   },
   head: {},

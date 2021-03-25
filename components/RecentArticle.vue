@@ -23,6 +23,7 @@
   }
   .title {
     position: absolute;
+    padding: 0 0.2rem;
     bottom: 1rem;
     left: 0;
     font-size: small;
