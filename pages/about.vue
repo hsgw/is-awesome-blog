@@ -1,8 +1,9 @@
 <template>
   <main>
     <div class="content">
+      <p>Author: <a href="https://twitter.com/hsgw" target="_blank">hsgw</a></p>
       <p>
-        私がみつけたものの引用と転載が主です<br />
+        このブログは私がみつけた良いものの引用と転載が主です<br />
         何か問題があれば<a href="https://twitter.com/hsgw">Twitter</a
         >へご連絡下さい
       </p>
@@ -26,7 +27,7 @@ main {
     background-color: white;
     p {
       font-size: small;
-      margin-top: 1rem;
+      margin: 1rem 0;
       &:nth-child(1) {
         margin-top: 0;
       }

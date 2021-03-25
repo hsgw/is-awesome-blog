@@ -20,10 +20,10 @@
         <Youtube
           v-else-if="article.sourceDetail.kind === 'youtube'"
           :video-id="article.sourceDetail.id"
-          class="youtube"
+          :resizeDelay="0"
           fitParent
           resize
-          :resizeDelay="0"
+          class="youtube"
           @ready="onYoutubeReady"
         ></Youtube>
       </div>
@@ -54,6 +54,29 @@
         <Share class="share" />
       </div>
     </div>
+    <div class="footNav">
+      <div v-if="prevArticle" class="prev">
+        <NuxtLink :to="`/post/${prevArticle.id}`">{{
+          `&lt; ${prevArticle.title}`
+        }}</NuxtLink>
+      </div>
+      <div v-if="nextArticle" class="next">
+        <NuxtLink :to="`/post/${nextArticle.id}`">{{
+          `${nextArticle.title} >`
+        }}</NuxtLink>
+      </div>
+    </div>
+    <div v-if="recentArticles.length" class="recentArticles">
+      <div class="title"><span>最近のAwesome</span></div>
+      <div class="container">
+        <RecentArticle
+          v-for="article in recentArticles"
+          :key="article.id"
+          :article="article"
+          class="item"
+        />
+      </div>
+    </div>
     <Loading :loading="isLoading" />
   </main>
 </template>
@@ -72,6 +95,39 @@
   height: 100%;
   top: 0;
   left: 0;
+}
+.footNav {
+  padding: 1.5rem 0 0 0;
+  font-size: small;
+  .next {
+    text-align: right;
+    margin-top: 0.5rem;
+  }
+  a {
+    text-decoration: none;
+    background-color: white;
+    padding: 0 0.2rem;
+  }
+}
+.recentArticles {
+  margin: 1.5rem 0;
+  .title {
+    margin: 0.4rem 0;
+    span {
+      font-weight: 500;
+      background-color: white;
+      padding-right: 0.3rem;
+    }
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    .item {
+      padding: 0.2rem 0;
+    }
+  }
 }
 main {
   overflow: hidden;
@@ -94,7 +150,7 @@ main {
           color: grey;
           width: 100px;
           height: 100px;
-          animation: twitter 1s ease-in infinite;
+          animation: twitter 0.5s infinite;
         }
       }
     }
@@ -121,13 +177,11 @@ main {
     }
   }
 }
-hr {
-  border-top: 1px solid grey;
-}
 .share {
   justify-content: flex-end;
   margin-right: 0.5rem;
 }
+
 @keyframes twitter {
   0% {
     transform: rotate(0deg);
@@ -167,7 +221,7 @@ import {
   wrapProperty,
   computed,
 } from '@nuxtjs/composition-api'
-import { ArticleResultItem } from '@/scripts/cms'
+import { ArticleResult, ArticleResultItem } from '@/scripts/cms'
 import { getSourceKind, Article } from '@/scripts/article'
 
 const useConfig = wrapProperty('$config', false)
@@ -182,6 +236,14 @@ export default defineComponent({
 
     const article = ref<Article>()
     const isLoading = ref(true)
+    const recentArticles = ref<Article[]>([])
+    const nextArticle = ref<{ title: string; id: string } | undefined>(
+      undefined
+    )
+    const prevArticle = ref<{ title: string; id: string } | undefined>(
+      undefined
+    )
+
     const id = computed(() => route.value.params.id)
     const path = computed(() => route.value.fullPath)
     const title = computed(() => article.value?.title ?? '')
@@ -221,31 +283,115 @@ export default defineComponent({
     }))
 
     useFetch(async () => {
-      const result = await $axios.get<ArticleResultItem>(
-        config.MICROCMS_API_BASE_URL + 'articles/' + id.value,
-        {
-          headers: {
-            'X-API-KEY': config.MICROCMS_X_API_KEY,
-          },
-          params: {
-            fields:
-              'id,publishedAt,title,image,categories.name,categories.id,source,body',
-          },
+      {
+        const result = await $axios.get<ArticleResultItem>(
+          config.MICROCMS_API_BASE_URL + 'articles/' + id.value,
+          {
+            headers: {
+              'X-API-KEY': config.MICROCMS_X_API_KEY,
+            },
+            params: {
+              fields:
+                'id,publishedAt,title,image,categories.name,categories.id,source,body',
+            },
+          }
+        )
+        article.value = {
+          ...result.data,
+          sourceDetail: getSourceKind(result.data),
         }
-      )
-      article.value = {
-        ...result.data,
-        sourceDetail: getSourceKind(result.data),
+        if (article.value.sourceDetail.kind !== 'youtube') {
+          isLoading.value = false
+        }
       }
-      if (article.value.sourceDetail.kind !== 'youtube') {
-        isLoading.value = false
+      {
+        const result = await $axios.get<ArticleResult>(
+          config.MICROCMS_API_BASE_URL + 'articles/',
+          {
+            headers: {
+              'X-API-KEY': config.MICROCMS_X_API_KEY,
+            },
+            params: {
+              limit: 1,
+              orders: 'publishedAt',
+              fields: 'id,title',
+              filters: `publishedAt[greater_than]${article.value.publishedAt}`,
+            },
+          }
+        )
+        if (
+          result.data.contents.length &&
+          result.data.contents[0].id &&
+          result.data.contents[0].title
+        ) {
+          nextArticle.value = {
+            id: result.data.contents[0].id,
+            title: result.data.contents[0].title,
+          }
+        }
+      }
+      {
+        const result = await $axios.get<ArticleResult>(
+          config.MICROCMS_API_BASE_URL + 'articles/',
+          {
+            headers: {
+              'X-API-KEY': config.MICROCMS_X_API_KEY,
+            },
+            params: {
+              limit: 1,
+              orders: '-publishedAt',
+              fields: 'id,title',
+              filters: `publishedAt[less_than]${article.value.publishedAt}`,
+            },
+          }
+        )
+        if (
+          result.data.contents.length &&
+          result.data.contents[0].id &&
+          result.data.contents[0].title
+        ) {
+          prevArticle.value = {
+            id: result.data.contents[0].id,
+            title: result.data.contents[0].title,
+          }
+        }
+      }
+      {
+        const result = await $axios.get<ArticleResult>(
+          config.MICROCMS_API_BASE_URL + 'articles/',
+          {
+            headers: {
+              'X-API-KEY': config.MICROCMS_X_API_KEY,
+            },
+            params: {
+              limit: 6,
+              orders: '-publishedAt',
+              fields:
+                'id,publishedAt,title,image,categories.name,categories.id,source',
+            },
+          }
+        )
+        recentArticles.value = [
+          ...result.data.contents.map((v) => ({
+            ...v,
+            sourceDetail: getSourceKind(v),
+          })),
+        ]
       }
     })
 
     const onYoutubeReady = () => {
       isLoading.value = false
     }
-    return { mdiTwitter, article, isLoading, onYoutubeReady }
+    return {
+      mdiTwitter,
+      article,
+      recentArticles,
+      nextArticle,
+      prevArticle,
+      isLoading,
+      onYoutubeReady,
+    }
   },
   head: {},
 })
