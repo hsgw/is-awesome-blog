@@ -28,7 +28,7 @@
 footer {
   text-align: center;
   font-size: small;
-  padding: 3rem 0;
+  padding: 1rem 0 3rem 0;
   .author {
     display: inline-block;
     width: unset;

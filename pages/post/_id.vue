@@ -111,7 +111,7 @@
   }
 }
 .recentArticles {
-  margin: 1.5rem 0;
+  margin: 2rem 0;
   .title {
     margin: 0.4rem 0;
     span {
