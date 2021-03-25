@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
+      <Title />
       <HeaderNavigation id="headerNav" />
       <Nuxt />
     </div>
@@ -15,7 +16,6 @@
     margin: 0 auto;
     max-width: 800px;
     z-index: 50;
-    padding-top: $headerHeight;
   }
 }
 </style>

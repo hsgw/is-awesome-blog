@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" :style="randomRotateStyle()">
     <div class="thumbnail">
       <img
         v-if="article.sourceDetail.thumbnail"
@@ -14,7 +14,7 @@
       >
         {{ article.title }}
       </div>
-      <NuxtLink :to="href"></NuxtLink>
+      <NuxtLink :to="`/post/${article.id}`"></NuxtLink>
     </div>
     <div class="description">
       <span
@@ -43,24 +43,30 @@
       height: auto;
     }
     .noThumb {
-      padding: 0 1rem;
+      padding: 1rem 0.5rem;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 2.4rem;
-      font-weight: 500;
+      font-weight: 700;
       background-color: white;
       position: relative;
       width: 100%;
-      min-height: 300px;
+      @media screen and (min-width: 800px) {
+        min-height: 400px;
+        text-align: center;
+      }
     }
     .title {
       font-size: larger;
-      font-weight: 500;
+      font-weight: 700;
       position: absolute;
       bottom: 10%;
       background-color: white;
-      padding-right: 0.4rem;
+      padding: 0 0.4rem;
+      @media screen and (min-width: 800px) {
+        font-size: xx-large;
+      }
     }
     & > a {
       cursor: pointer;
@@ -88,8 +94,9 @@
 </style>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { Article } from '@/scripts/article'
+import { randomRotateStyle } from '@/scripts/random'
 
 export default defineComponent({
   props: {
@@ -99,8 +106,7 @@ export default defineComponent({
     },
   },
   setup(_props, _context) {
-    const href = computed(() => `/post/${_props.article.id}`)
-    return { href }
+    return { randomRotateStyle }
   },
 })
 </script>

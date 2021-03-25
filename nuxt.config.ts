@@ -67,7 +67,7 @@ const config: NuxtConfig = {
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;900&display=swap',
+          'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap',
       },
     ],
   },

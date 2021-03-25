@@ -1,7 +1,7 @@
 <template>
   <div class="headerNav">
-    <div class="item"><a href="/">Top</a></div>
-    <div class="item">About</div>
+    <div class="item"><NuxtLink to="/">Top</NuxtLink></div>
+    <div class="item"><NuxtLink to="/about">about</NuxtLink></div>
     <div v-for="category in categories" :key="category.id" class="item">
       <NuxtLink :to="'/category/' + category.name">{{
         `#${category.name}`
@@ -18,6 +18,7 @@
   .item {
     text-transform: capitalize;
     font-size: small;
+    font-weight: 500;
     padding: 0.2rem 0.4rem;
     text-decoration: underline;
   }

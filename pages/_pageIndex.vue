@@ -1,41 +1,39 @@
 <template>
   <div class="container">
-    <div>
-      <header>
-        <div v-if="!hasPrev && !categoryName" class="content">
-          <p>インターネットにあるイケてるものを並べるブログ</p>
-          <p>
-            主に音楽やデザイン、電子工作のプロジェクトを集めています<br />
-            最近はメカニカルキーボードが好き
-          </p>
-        </div>
-        <div v-if="categoryName" class="categoryTitle">
-          {{
-            `#${categoryName[0].toUpperCase()}${categoryName.slice(1)} ${
-              pageIndex === 0 ? '' : `/ ${pageIndex}`
-            }`
-          }}
-        </div>
-        <div v-else-if="pageIndex !== 0" class="categoryTitle">
-          {{ `#All ${pageIndex === 0 ? '' : `/ ${pageIndex}`}` }}
-        </div>
-      </header>
-      <main>
-        <div v-if="hasPrev" class="pageNavContainer prev">
-          <div class="pageNav"><span>/// Prev</span></div>
-          <NuxtLink :to="prevLink"></NuxtLink>
-        </div>
-        <ArticleIndexItem
-          v-for="article in articles"
-          :key="article.id"
-          :article="article"
-        />
-        <div v-if="hasNext" class="pageNavContainer next">
-          <div class="pageNav"><span>Next ///</span></div>
-          <NuxtLink :to="nextLink"></NuxtLink>
-        </div>
-      </main>
-    </div>
+    <header>
+      <div v-if="pageIndex === 0 && !categoryName" class="content">
+        <p>インターネットにあるイケてるものを並べるブログ</p>
+        <p>
+          主に音楽やデザイン、電子工作のプロジェクトを集めています<br />
+          最近はメカニカルキーボードが好き
+        </p>
+        <Share class="share" />
+      </div>
+    </header>
+    <main>
+      <Pager
+        v-if="!(pageIndex === 0 && !categoryName)"
+        :state="{
+          pageIndex,
+          categoryName,
+          articlesTotalCount,
+          articlesOffset,
+        }"
+      />
+      <ArticleIndexItem
+        v-for="article in articles"
+        :key="article.id"
+        :article="article"
+      />
+      <Pager
+        :state="{
+          pageIndex,
+          categoryName,
+          articlesTotalCount,
+          articlesOffset,
+        }"
+      />
+    </main>
     <Loading :loading="isLoading" />
   </div>
 </template>
@@ -44,53 +42,26 @@
 header {
   .content {
     width: calc(100% - 2rem);
-    margin: 1rem 1rem 2rem 1rem;
+    margin: 1rem 1rem 1rem 1rem;
     padding: 1rem;
-    font-size: small;
     background-color: white;
     p {
+      font-size: small;
       margin-top: 1rem;
       &:nth-child(1) {
         margin-top: 0;
       }
     }
   }
-  .categoryTitle {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    border: 1px solid black;
-    font-size: large;
-    font-weight: 700;
+  .share {
+    margin: 1rem 0 0 0;
   }
 }
-.pageNavContainer {
-  position: relative;
+main {
   width: 100%;
-  display: flex;
-  .pageNav {
-    width: 300px;
-    padding: 1rem;
-    margin: 1rem 1rem;
-    border: 1px solid black;
-    span {
-      font-weight: 800;
-      padding: 0 1rem;
-      background-color: white;
-    }
-  }
-  &.next {
-    justify-content: flex-end;
-    text-align: right;
-    .pageNav {
-      margin-top: 0;
-    }
-  }
-  a {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+  overflow: hidden;
+  @media screen and (min-width: 800px) {
+    overflow: unset;
   }
 }
 </style>
@@ -129,25 +100,9 @@ export default defineComponent({
     const articlesOffset = computed(() => {
       return pageIndex.value * config.ITEMS_PER_PAGE
     })
-    const hasPrev = computed(() => pageIndex.value > 0)
-    const hasNext = computed(
-      () =>
-        articlesTotalCount.value > articlesOffset.value + config.ITEMS_PER_PAGE
-    )
 
     const category = ref<Category>()
     const categoryName = computed(() => route.value.params.category)
-
-    const prevLink = computed(
-      () =>
-        (categoryName.value ? `/category/${categoryName.value}/` : '/') +
-        (pageIndex.value - 1 !== 0 ? `${pageIndex.value - 1}` : '')
-    )
-    const nextLink = computed(
-      () =>
-        (categoryName.value ? `/category/${categoryName.value}/` : '/') +
-        `${pageIndex.value + 1}`
-    )
 
     useFetch(async () => {
       let filters
@@ -199,11 +154,9 @@ export default defineComponent({
       isLoading,
       articles,
       pageIndex,
-      hasPrev,
-      hasNext,
-      prevLink,
-      nextLink,
       categoryName,
+      articlesTotalCount,
+      articlesOffset,
     }
   },
 })
