@@ -76,7 +76,7 @@ const config: NuxtConfig = {
   css: ['ress', '@/assets/scss/global.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['@/plugins/transitionProps.ts'],
+  plugins: ['@/plugins/transitionProps.ts', '@/plugins/VueGtag.ts'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
