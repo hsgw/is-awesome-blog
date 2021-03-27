@@ -66,6 +66,12 @@ const config: NuxtConfig = {
         href: '/apple-touch-icon-180x180.png',
       },
       { rel: 'icon', type: 'image/png', href: '/icon-192x192.png' },
+      {
+        rel: 'alternate',
+        type: 'application/rss+xml',
+        title: 'RSS 2.0',
+        href: 'https://is-awesome.5z6p.com/rss.xml',
+      },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
       {
         rel: 'stylesheet',
@@ -132,12 +138,12 @@ const config: NuxtConfig = {
   },
 
   generate: {
-    exclude: [/^\/feed/],
+    exclude: [/^\/rss.xml/],
   },
 
   feed: [
     {
-      path: '/feed',
+      path: '/rss.xml',
       type: 'rss2',
       create: async (feed: any) => {
         feed.options = {
