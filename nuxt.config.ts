@@ -1,7 +1,5 @@
-import { mdiPageLayoutBody } from '@mdi/js'
 import { NuxtConfig } from '@nuxt/types'
 import axios from 'axios'
-import { getSourceKind } from './scripts/article'
 import { ArticleResult } from './scripts/cms'
 
 const config: NuxtConfig = {
