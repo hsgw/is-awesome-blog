@@ -149,10 +149,10 @@ const config: NuxtConfig = {
             'インターネットにあるイケてるものを並べるブログ　主に音楽やデザイン、電子工作のプロジェクトを集めています',
         }
         const result = await axios.get<ArticleResult>(
-          process.env.DEV_MICROCMS_API_BASE_URL + 'articles',
+          process.env.MICROCMS_API_BASE_URL + 'articles',
           {
             headers: {
-              'X-API-KEY': process.env.DEV_MICROCMS_X_API_KEY,
+              'X-API-KEY': process.env.MICROCMS_X_API_KEY,
             },
             params: {
               limit: config.ITEMS_PER_PAGE,
