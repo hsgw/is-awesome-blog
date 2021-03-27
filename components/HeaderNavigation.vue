@@ -7,6 +7,7 @@
         `#${category.name}`
       }}</NuxtLink>
     </div>
+    <div class="item"><NuxtLink to="/feed">rss</NuxtLink></div>
   </div>
 </template>
 

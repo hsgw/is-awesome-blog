@@ -1,4 +1,8 @@
+import { mdiPageLayoutBody } from '@mdi/js'
 import { NuxtConfig } from '@nuxt/types'
+import axios from 'axios'
+import { getSourceKind } from './scripts/article'
+import { ArticleResult } from './scripts/cms'
 
 const config: NuxtConfig = {
   publicRuntimeConfig: {
@@ -101,6 +105,7 @@ const config: NuxtConfig = {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/style-resources',
+    '@nuxtjs/feed',
   ],
 
   styleResources: {
@@ -127,6 +132,58 @@ const config: NuxtConfig = {
       })
     },
   },
+
+  generate: {
+    exclude: [/^\/feed/],
+  },
+
+  feed: [
+    {
+      path: '/feed',
+      type: 'rss2',
+      create: async (feed: any) => {
+        feed.options = {
+          title: 'is Awesome',
+          link: 'https://is-awesome.5z6p.com',
+          description:
+            'インターネットにあるイケてるものを並べるブログ　主に音楽やデザイン、電子工作のプロジェクトを集めています',
+        }
+        const result = await axios.get<ArticleResult>(
+          process.env.DEV_MICROCMS_API_BASE_URL + 'articles',
+          {
+            headers: {
+              'X-API-KEY': process.env.DEV_MICROCMS_X_API_KEY,
+            },
+            params: {
+              limit: config.ITEMS_PER_PAGE,
+              orders: '-publishedAt',
+              fields: 'id,publishedAt,body,title,image,source',
+              offset: 0,
+            },
+          }
+        )
+        if (!result.data.contents.length)
+          console.error("can't get article data in make feed")
+        result.data.contents.forEach((v) => {
+          const body = v?.body
+            ? v.body.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')
+            : ''
+          feed.addItem({
+            title: `${v.title} is Awesome`,
+            id: `https://is-awesome.5z6p.com/posts/${v.id}`,
+            link: `https://is-awesome.5z6p.com/posts/${v.id}`,
+            description: body.slice(0, 100),
+            content: body,
+            date: new Date(v.publishedAt),
+          })
+        })
+        feed.addContributor({
+          name: 'hsgw',
+          link: 'https://twitter.com/hsgw',
+        })
+      },
+    },
+  ],
 }
 
 export default config
