@@ -174,8 +174,8 @@ const config: NuxtConfig = {
             : ''
           feed.addItem({
             title: `${v.title} is Awesome`,
-            id: `https://is-awesome.5z6p.com/posts/${v.id}`,
-            link: `https://is-awesome.5z6p.com/posts/${v.id}`,
+            id: `https://is-awesome.5z6p.com/post/${v.id}`,
+            link: `https://is-awesome.5z6p.com/post/${v.id}`,
             description: body.slice(0, 100),
             content: body,
             date: new Date(v.publishedAt),
