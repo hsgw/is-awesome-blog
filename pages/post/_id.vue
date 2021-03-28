@@ -3,7 +3,7 @@
     <div v-if="article">
       <div class="image">
         <img
-          v-if="article.sourceDetail.kind === 'normal'"
+          v-if="article.sourceDetail.kind === 'normal' || 'imgur'"
           :src="article.sourceDetail.thumbnail"
           width="320px"
           height="180px"

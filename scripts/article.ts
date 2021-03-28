@@ -1,7 +1,7 @@
 import { ArticleResultItem } from '~/scripts/cms'
 
 interface SourceDetail {
-  kind: 'youtube' | 'twitter' | 'normal' | 'unknown'
+  kind: 'youtube' | 'twitter' | 'normal' | 'imgur' | 'unknown'
   thumbnail?: string
   id?: string
 }
@@ -27,6 +27,18 @@ function getTwitterStatusId(url: string) {
   }
 }
 
+function getImgurId(url: string) {
+  if (url.startsWith('https://imgur.com/')) {
+    return url.replace('https://imgur.com/', '').slice(0, 7)
+  }
+  if (url.startsWith('https://i.imgur.com/') && url.endsWith('.jpg')) {
+    return url
+      .replace('https://i.imgur.com/', '')
+      .replace('.jpg', '')
+      .slice(0, 7)
+  }
+}
+
 export function getSourceKind(article: ArticleResultItem): SourceDetail {
   if (article.image) {
     return {
@@ -48,6 +60,14 @@ export function getSourceKind(article: ArticleResultItem): SourceDetail {
       return {
         kind: 'twitter',
         id: twitterId,
+      }
+    }
+    const imgurId = getImgurId(article.source)
+    if (imgurId) {
+      return {
+        kind: 'imgur',
+        id: imgurId,
+        thumbnail: `https://i.imgur.com/${imgurId}l.jpg`,
       }
     }
   }
