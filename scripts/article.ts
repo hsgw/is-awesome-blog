@@ -7,8 +7,8 @@ interface SourceDetail {
 }
 
 export type Article = ArticleResultItem & {
-  body?: string
   sourceDetail: SourceDetail
+  sources: string[]
 }
 
 function getYoutubeVideoId(url: string) {
@@ -47,31 +47,38 @@ export function getSourceKind(article: ArticleResultItem): SourceDetail {
     }
   }
   if (article.source) {
-    const youtubeId = getYoutubeVideoId(article.source)
-    if (youtubeId) {
-      return {
-        kind: 'youtube',
-        id: youtubeId,
-        thumbnail: `http://img.youtube.com/vi/${youtubeId}/sddefault.jpg`,
+    const source = article.source.split('\n')[0]
+    if (source) {
+      const youtubeId = getYoutubeVideoId(source)
+      if (youtubeId) {
+        return {
+          kind: 'youtube',
+          id: youtubeId,
+          thumbnail: `http://img.youtube.com/vi/${youtubeId}/sddefault.jpg`,
+        }
       }
-    }
-    const twitterId = getTwitterStatusId(article.source)
-    if (twitterId) {
-      return {
-        kind: 'twitter',
-        id: twitterId,
+      const twitterId = getTwitterStatusId(source)
+      if (twitterId) {
+        return {
+          kind: 'twitter',
+          id: twitterId,
+        }
       }
-    }
-    const imgurId = getImgurId(article.source)
-    if (imgurId) {
-      return {
-        kind: 'imgur',
-        id: imgurId,
-        thumbnail: `https://i.imgur.com/${imgurId}l.jpg`,
+      const imgurId = getImgurId(source)
+      if (imgurId) {
+        return {
+          kind: 'imgur',
+          id: imgurId,
+          thumbnail: `https://i.imgur.com/${imgurId}l.jpg`,
+        }
       }
     }
   }
   return {
     kind: 'unknown',
   }
+}
+
+export function getSources(source: string) {
+  return source.split('\n').filter((v) => v) ?? []
 }

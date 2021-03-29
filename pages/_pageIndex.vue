@@ -77,7 +77,7 @@ import {
   computed,
 } from '@nuxtjs/composition-api'
 import { ArticleResult, Category, CategoryResult } from '@/scripts/cms'
-import { getSourceKind, Article } from '@/scripts/article'
+import { getSourceKind, Article, getSources } from '@/scripts/article'
 
 const useConfig = wrapProperty('$config', false)
 
@@ -145,6 +145,7 @@ export default defineComponent({
           ...result.data.contents.map((v) => ({
             ...v,
             sourceDetail: getSourceKind(v),
+            sources: getSources(v.source ?? ''),
           }))
         )
       }

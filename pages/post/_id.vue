@@ -49,9 +49,9 @@
         <div id="body" class="articleBody" v-html="article.body"></div>
         <div v-if="article.source" class="source">
           <div style="font-size: x-small">(引用元)</div>
-          <a :href="article.source" target="_blank" rel="noreferrer">{{
-            article.source
-          }}</a>
+          <div v-for="source in article.sources" :key="source">
+            <a :href="source" target="_blank" rel="noreferrer">{{ source }}</a>
+          </div>
         </div>
         <hr />
         <Share class="share" />
@@ -226,7 +226,7 @@ import {
   computed,
 } from '@nuxtjs/composition-api'
 import { ArticleResult, ArticleResultItem } from '@/scripts/cms'
-import { getSourceKind, Article } from '@/scripts/article'
+import { getSourceKind, getSources, Article } from '@/scripts/article'
 import { randomRotateStyle } from '@/scripts/random'
 
 const useConfig = wrapProperty('$config', false)
@@ -304,6 +304,7 @@ export default defineComponent({
         article.value = {
           ...result.data,
           sourceDetail: getSourceKind(result.data),
+          sources: getSources(result.data.source ?? ''),
         }
         if (article.value.sourceDetail.kind !== 'youtube') {
           isLoading.value = false
@@ -380,6 +381,7 @@ export default defineComponent({
           ...result.data.contents.map((v) => ({
             ...v,
             sourceDetail: getSourceKind(v),
+            sources: getSources(v.source ?? ''),
           })),
         ]
       }
